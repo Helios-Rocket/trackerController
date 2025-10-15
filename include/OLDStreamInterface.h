@@ -2,17 +2,16 @@
 
 #include <Arduino.h>
 
-#include "Sensor.h"
-#include "AxisController.h"
-#include "IMU.h"
+// #include "Sensor.h"
+// #include "AxisController.h"
 
 #define READ_BUFFER_LENGTH 64 // Arbitrary length, but is longer than any currently-defined messages
 
 class StreamInterface
 {
     public:
-        StreamInterface(Stream *StreamInterface, Sensor *AzimuthSensor, Sensor *ElevationSensor, AxisController *AzimuthAxis, AxisController *ElevationAxis, IMU *Imu) 
-        : streamInterface(StreamInterface), azimuthSensor(AzimuthSensor), elevationSensor(ElevationSensor), azimuthController(AzimuthAxis), elevationController(ElevationAxis), imu(Imu) {};
+        StreamInterface(Stream *StreamInterface, Sensor *AzimuthSensor, Sensor *ElevationSensor, AxisController *AzimuthAxis, AxisController *ElevationAxis) 
+        : streamInterface(StreamInterface), azimuthSensor(AzimuthSensor), elevationSensor(ElevationSensor), azimuthController(AzimuthAxis), elevationController(ElevationAxis) {};
 
         void send(const char *buffer, size_t length_bytes) { streamInterface->write(buffer, length_bytes); };
         Stream *streamInterface;
@@ -70,7 +69,6 @@ private: // variables
         Sensor *elevationSensor;
         AxisController *azimuthController;
         AxisController *elevationController;
-        IMU *imu;
 
 private: // functions
 
@@ -114,43 +112,6 @@ private: // functions
             send(str.c_str(), str.length());
         }
 
-        void handleGetter_gps()
-        {
-            // TODO: Add the GPS values once GPS is implemented
-            int gpsLat_decimal = round(0 * 100);
-            int gpsLong_decimal = round(0 * 100);
-
-            String str = "D;G;";
-            str += String(gpsLat_decimal) + ";";
-            str += String(gpsLong_decimal)  + ";";
-            str += 'E';
-
-            send(str.c_str(), str.length());
-        }
-
-        void handleGetter_imu()
-        {
-            #ifdef REAL
-            IMUData imuData = imu->getData();
-            
-            int gravityX_gs = round(imuData.xAcc * 100);
-            int gravityY_gs = round(imuData.yAcc * 100);
-            int gravityZ_gs = round(imuData.zAcc * 100);
-
-            // TODO: implement heading calculation
-            int heading_degrees = round(0 * 100);
-
-            String str = "D;I;";
-            str += String(gravityX_gs) + ";";
-            str += String(gravityY_gs)  + ";";
-            str += String(gravityZ_gs)  + ";";
-            str += String(heading_degrees)  + ";";
-            str += 'E';
-            
-
-            send(str.c_str(), str.length());
-            #endif
-        }
 
         void handleEstop_brake()
         {
@@ -208,16 +169,6 @@ private: // functions
                 case 'L':
                 {
                     handleGetter_pose();
-                    break;
-                }
-                case 'G':
-                {
-                    handleGetter_gps();
-                    break;
-                }
-                case 'I':
-                {
-                    handleGetter_imu();
                     break;
                 }
                 case 'B':

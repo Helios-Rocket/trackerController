@@ -2,12 +2,12 @@
 
 #include <Arduino.h>
 
+// think of this as an interface
 class Sensor
 {
     public:
         Sensor(){};
-        virtual void setSensorPins(uint8_t){};
-        virtual void setSensorPins(uint8_t, uint8_t, uint8_t){};
+        virtual void setSensorPins(uint8_t, uint8_t){};
 
         void setPhysicalConversionConstant(double ConversionConstant)
             { conversionConstant = ConversionConstant; };
@@ -39,19 +39,7 @@ class Sensor
 
         virtual ~Sensor() {};
 
-        virtual void updateVelocity(){
-            // time math
-            unsigned long dt = micros() - lastTime;
-            lastTime = micros();
-
-            // SerialUSB.println(dt);
-
-            // SerialUSB.println(currentPos-lastPos);
-
-            // velocity math
-            currentVel = ( (float)(currentPos - lastPos) / (float)dt ) * ((10e4));
-            lastPos = currentPos;             
-        }
+        virtual void updateVelocity(){};
 
     protected:
         int64_t currentPos; // use integers internally to prevent any floating point weirdness

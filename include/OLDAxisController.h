@@ -1,13 +1,15 @@
+// REWRITE THIS WHOLE THING....
+
 #pragma once
 
 #include <Arduino.h>
 #include <TeensyTimerTool.h>
 
-#include "Sensor.h"
+// #include "Sensor.h"
 
-#include "StepDriver.h"
+// #include "StepDriver.h"
 
-#include "MotionProfiler.h"
+// #include "MotionProfiler.h"
 
 enum HoldBehavior {coastMode, brakeMode};
 
