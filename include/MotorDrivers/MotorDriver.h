@@ -10,10 +10,10 @@ class MotorDriver
 
         virtual void setPins(uint8_t, uint8_t, uint8_t); // used for both types
 
-        virtual void setPhysicalConstants(float , float);
+        virtual void setPhysicalConstants(float , uint32_t);
 
         virtual uint8_t begin();
-        virtual uint8_t update();
+        // virtual uint8_t update();
 
         // if you wish to set the velocity but not start running the motor, set the second argument to false
         // THIS IS VELOCITY AT THE MOTOR

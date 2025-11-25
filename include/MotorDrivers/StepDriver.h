@@ -13,7 +13,7 @@ class StepDriver : public MotorDriver
         void setPins(uint8_t DirectionPin, uint8_t StepPin, uint8_t EnablePin) override
             { dirPin = DirectionPin; stepPin = StepPin; enablePin = EnablePin; };
 
-        void setPhysicalConstants(float degreesPerStep, float microstepResolution) override
+        void setPhysicalConstants(float degreesPerStep, uint32_t microstepResolution) override
             { degPerStep = degreesPerStep; microstepRes = microstepResolution; };
 
         uint8_t begin() override
@@ -45,6 +45,7 @@ class StepDriver : public MotorDriver
 
             setDirection(dir);
             updateFrequency(stepFreq);
+            SerialUSB.println(stepFreq);
             
 
             if(startAutomatically){ start(); };
@@ -63,7 +64,7 @@ class StepDriver : public MotorDriver
         uint8_t enablePin = -1;
 
         float degPerStep;
-        float microstepRes;
+        uint32_t microstepRes;
 
         void updateFrequency(double frequency)
         {

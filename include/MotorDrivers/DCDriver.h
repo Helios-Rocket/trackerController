@@ -12,7 +12,7 @@ class DCDriver : public MotorDriver
         void setPins(uint8_t IN1, uint8_t IN2, uint8_t EN) override
             { dir1 = IN1; dir2 = IN2; pwm = EN; };
 
-        void setPhysicalConstants(float maxSpeedTheoretical, float microstepResolution) override
+        void setPhysicalConstants(float maxSpeedTheoretical, uint32_t UNUSED) override
             { theoreticalMaxSpeed = maxSpeedTheoretical; };
 
         uint8_t begin() override
@@ -44,18 +44,14 @@ class DCDriver : public MotorDriver
 
             currentVelocityCommand = setVelocity;            
 
-            
-
-            
-            
-
             if(startAutomatically){ start(); };
         };
 
         void start()
         {
             setDirection(getDir(currentVelocityCommand));
-            analogWrite(pwm, getPulseWidth(currentVelocityCommand));
+            SerialUSB.println(currentVelocityCommand);
+            analogWrite(pwm, abs(currentVelocityCommand));
             running = true;
         }
 
@@ -77,7 +73,7 @@ class DCDriver : public MotorDriver
         {
             // convert to a PWM pulse frequency
             // we have the resolution set at 12 bits above, which is 0-4095
-            return 4095 * fabs(desiredVel) / theoreticalMaxSpeed;
+            return 4095.0 * (fabs(desiredVel) / theoreticalMaxSpeed);
         };
 
         bool getDir(float desiredVel)

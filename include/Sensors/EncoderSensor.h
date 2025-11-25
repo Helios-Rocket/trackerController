@@ -33,10 +33,11 @@ class EncoderSensor : public Sensor
 
         void debugPrint(Stream *printInterface)
         {
-            printInterface->print("Current Position: "); printInterface->print(currentPos); printInterface->print(", ");
-            printInterface->print("Current Velocity: "); printInterface->print(getVelocity(), 5); printInterface->print(", ");
-            printInterface->print("Zero Position: "); printInterface->print(zeroPos); printInterface->print(", ");
+            // printInterface->print("Current Position: "); printInterface->print(currentPos); printInterface->print(", ");
+            // printInterface->print("Current Velocity: "); printInterface->print(getVelocity(), 5); printInterface->print(", ");
+            // printInterface->print("Zero Position: "); printInterface->print(zeroPos); printInterface->print(", ");
             printInterface->print("Encoder Ticks: "); printInterface->print(encoder.read()); printInterface->print(", ");
+            printInterface->println();
         }
 
 

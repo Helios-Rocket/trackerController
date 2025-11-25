@@ -7,10 +7,10 @@
 
 #include "Sensor.h"
 
-class EncoderSensor : public Sensor
+class MagneticEncoderSensor : public Sensor
 {
     public:
-        EncoderSensor() = default;
+        MagneticEncoderSensor() = default;
         void setSensorPins(uint8_t PinCLK, uint8_t PinDATA) override
             { scl = PinCLK; sda = PinDATA; };
 
@@ -23,7 +23,7 @@ class EncoderSensor : public Sensor
 
             // start our actual sensor
             as5600.begin();
-            as5600.setDirection(AS5600_CLOCK_WISE);
+            as5600.setDirection(AS5600_COUNTERCLOCK_WISE);
 
             zeroed = true;
             return as5600.isConnected();
@@ -38,7 +38,8 @@ class EncoderSensor : public Sensor
 
         void debugPrint(Stream *printInterface)
         {
-
+            printInterface->printf("Encoder Angle: %.3f, ",currentPos*AS5600_RAW_TO_DEGREES);
+            printInterface->printf("Axis Angle: %.3f \n",currentPos*conversionConstant);
         }
 
 

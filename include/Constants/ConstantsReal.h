@@ -7,10 +7,11 @@
 
 constexpr float homingVelocity = 0.5; // degrees per second
 
-
-constexpr float azimuthMaxVelocity      = 100.0; // degrees per second
+// THESE ARE AT AXIS
+constexpr float azimuthMaxVelocity      = 1.0; // degrees per second
 constexpr float azimuthMaxAcceleration  = 100.0; // degrees per second^2
 
+// THESE ARE AT AXIS
 constexpr float elevationMaxVelocity      = 100.0; // degrees per second
 constexpr float elevationMaxAcceleration  = 100.0; // degrees per second^2
 
@@ -43,12 +44,12 @@ constexpr float azimuthMainGearTeeth = 120; // gear teeth
 constexpr float azimuthMotorPinionTeeth = 24; // gear teeth
 constexpr float azimuthGearboxRatio = 520; // gear ratio, NEED TO VERIFY
 
-constexpr float azimuthGearRatio = (azimuthMotorPinionTeeth/azimuthMainGearTeeth);
+constexpr float azimuthGearRatio = ((azimuthMotorPinionTeeth/azimuthMainGearTeeth) * (1/azimuthGearboxRatio));
 
 constexpr uint azimuthActualTicksPerMotorRev = 4; // NEED TO VERIFY
 constexpr uint azimuthTicksPerMotorRev = 4 * azimuthActualTicksPerMotorRev;
 
-constexpr uint azimuthTicksPerRev = azimuthTicksPerMotorRev * azimuthGearRatio;
+constexpr uint azimuthTicksPerRev = azimuthTicksPerMotorRev / azimuthGearRatio;
 
 
 
@@ -71,10 +72,14 @@ constexpr float DegreesPerStepElevation = 1.8f;
 constexpr float azimuthMinimumAngle = -90.0f; // degrees
 constexpr float azimuthMaximumAngle = 90.0f; // degrees
 
+constexpr int64_t azimuthZeroReading = 0; // units
+
 
 // must be determined/defined
 constexpr float elevationMinimumAngle = 0.0f; // degrees
 constexpr float elevationMaximumAngle = 180.0f; // degrees
+
+constexpr int64_t elevationZeroReading = 0; // units
 
 ////////////////////////////////////////////////////////////////////// Pins //////////////////////////////////////////////////////////////////////
 
@@ -90,5 +95,5 @@ constexpr uint8_t elevationDirection = 5;
 constexpr uint8_t elevationEnable = 4;
 constexpr uint8_t elevationAlarm = 0;
 
-constexpr uint8_t sda = 18;
-constexpr uint8_t scl = 19;
+constexpr uint8_t elevationSDA = 18;
+constexpr uint8_t elevationSCL = 19;
