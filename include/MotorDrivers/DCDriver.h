@@ -50,7 +50,6 @@ class DCDriver : public MotorDriver
         void start()
         {
             setDirection(getDir(currentVelocityCommand));
-            SerialUSB.println(currentVelocityCommand);
             analogWrite(pwm, abs(currentVelocityCommand));
             running = true;
         }
@@ -59,6 +58,7 @@ class DCDriver : public MotorDriver
         {
             analogWrite(pwm, 0);
             running = false;
+            setHold();
         };
 
 
@@ -68,6 +68,21 @@ class DCDriver : public MotorDriver
         uint8_t pwm = -1;
 
         float theoreticalMaxSpeed;
+
+        void setHold()
+        {
+            switch(holdMode){
+                case HoldBehavior::brakeMode:
+                    digitalWrite(dir1, HIGH);
+                    digitalWrite(dir2, HIGH);
+                    break;
+                case HoldBehavior::coastMode:
+                    digitalWrite(dir1, LOW);
+                    digitalWrite(dir2, LOW);
+                    break;
+            };
+        }
+
         
         uint16_t getPulseWidth(float desiredVel)
         {

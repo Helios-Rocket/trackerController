@@ -2,6 +2,8 @@
 
 #include <Arduino.h>
 
+enum HoldBehavior {coastMode, brakeMode};
+
 // think of this as an interface
 class MotorDriver
 {
@@ -14,6 +16,8 @@ class MotorDriver
 
         virtual uint8_t begin();
         // virtual uint8_t update();
+
+        void setHoldBehavior(HoldBehavior HoldMode){holdMode = HoldMode;};
 
         // if you wish to set the velocity but not start running the motor, set the second argument to false
         // THIS IS VELOCITY AT THE MOTOR
@@ -32,9 +36,11 @@ class MotorDriver
 
         float getCurrentVelocityCommand(){return currentVelocityCommand;};
         bool isRunning(){return running;};
+        HoldBehavior getHoldBehavior(){return holdMode;};
 
         
     protected:
         float currentVelocityCommand = 0;
         bool running = false;
+        HoldBehavior holdMode;
 };

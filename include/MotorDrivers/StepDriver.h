@@ -51,9 +51,9 @@ class StepDriver : public MotorDriver
             if(startAutomatically){ start(); };
         };
 
-        void start() { timer.start(); running = true; };
+        void start() { timer.start(); running = true; digitalWrite(enablePin, HIGH); };
 
-        void stop() { timer.stop(); running = false; };
+        void stop() { timer.stop(); running = false; setHold(); };
 
 
     private:
@@ -65,6 +65,18 @@ class StepDriver : public MotorDriver
 
         float degPerStep;
         uint32_t microstepRes;
+
+        void setHold()
+        {
+            switch(holdMode){
+                case HoldBehavior::brakeMode:
+                    digitalWrite(enablePin, HIGH);
+                    break;
+                case HoldBehavior::coastMode:
+                    digitalWrite(enablePin, LOW);
+                    break;
+            };
+        }
 
         void updateFrequency(double frequency)
         {
