@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include <TeensyTimerTool.h>
 
 // think of this as an interface
 class Sensor
@@ -9,16 +10,14 @@ class Sensor
         Sensor(){};
         virtual void setSensorPins(uint8_t, uint8_t){};
 
+        void setUpdateRate(float updatesPerSecond)
+            { dt = 1.0/updatesPerSecond; }
+
         void setPhysicalConversionConstant(double ConversionConstant)
             { conversionConstant = ConversionConstant; };
 
         void setZero(int64_t ZeroPos)
             {zeroPos = ZeroPos; zeroed = true; };
-
-        void setZeroOffset(float offsetDegrees)
-        {
-            zeroOffset = offsetDegrees / conversionConstant;
-        }
 
         void unsetZero()
             { zeroed = false; }
@@ -30,10 +29,10 @@ class Sensor
         
         // returns in the unit specified by your conversion constant
         virtual float getDistFrom0()
-            {return currentPos * conversionConstant; };
+            {return currentPos; };
 
         virtual float getVelocity()
-            {return currentVel * conversionConstant; };
+            {return currentVel; };
 
         virtual void debugPrint(Stream* printInterface);
 
@@ -42,17 +41,14 @@ class Sensor
         virtual void updateVelocity(){};
 
     protected:
-        int64_t currentPos; // use integers internally to prevent any floating point weirdness
-        int64_t lastPos;
-        int64_t zeroPos = 0;
-
-        int64_t zeroOffset;
-
-        float currentVel;
+        TeensyTimerTool::PeriodicTimer updateTimer;
+        double currentPos, lastPos, zeroPos, currentVel = 0.0;
 
         unsigned long lastTime;
 
         float conversionConstant;
+
+        double dt;
 
         bool zeroed = false;
 };

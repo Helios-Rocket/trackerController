@@ -49,7 +49,7 @@ constexpr float azimuthGearRatio = ((azimuthMotorPinionTeeth/azimuthMainGearTeet
 constexpr uint azimuthActualTicksPerMotorRev = 4; // NEED TO VERIFY
 constexpr uint azimuthTicksPerMotorRev = 4 * azimuthActualTicksPerMotorRev;
 
-constexpr uint azimuthTicksPerRev = azimuthTicksPerMotorRev / azimuthGearRatio;
+constexpr double azimuthDegreesPerTick = azimuthGearRatio * azimuthTicksPerMotorRev / 360.0;
 
 
 
@@ -69,15 +69,14 @@ constexpr float DegreesPerStepElevation = 1.8f;
 ////////////////////////////////////////////////////////////////////// Sensor Calibration Values //////////////////////////////////////////////////////////////////////
 
 // must be determined / defined
-constexpr float azimuthMinimumAngle = -90.0f; // degrees
-constexpr float azimuthMaximumAngle = 90.0f; // degrees
+constexpr float azimuthMinimumAngle = -120.0f; // degrees
+constexpr float azimuthMaximumAngle = 120.0f; // degrees
 
 constexpr int64_t azimuthZeroReading = 0; // units
 
-
 // must be determined/defined
 constexpr float elevationMinimumAngle = 0.0f; // degrees
-constexpr float elevationMaximumAngle = 180.0f; // degrees
+constexpr float elevationMaximumAngle = 100.0f; // degrees
 
 constexpr int64_t elevationZeroReading = 0; // units
 

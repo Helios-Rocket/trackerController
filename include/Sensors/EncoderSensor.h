@@ -17,24 +17,30 @@ class EncoderSensor : public Sensor
             encoder.begin(pinA, pinB);
             zeroed = true;
             return 0;
+
+            updateTimer.begin([this](){this->update();}, (dt*(10^6)));
         };
 
-        // returns 1 if zeroed during loop cycle, 0 otherwise
+        
         uint8_t update() override
         {
             // encoder.update(&encoder.encoder);
-            currentPos = encoder.read() - zeroPos;
+            int32_t currentPosRaw = encoder.read();
+            currentPos = (encoder.read()*conversionConstant)-zeroPos;
 
-            // updateVelocity();
+            currentVel = ((currentPosRaw - lastPosRaw) / dt) * conversionConstant;
 
+            // update our last changes
+            lastPosRaw = currentPosRaw;
+            lastPos = currentPos;
 
             return 0;
         }
 
         void debugPrint(Stream *printInterface)
         {
-            // printInterface->print("Current Position: "); printInterface->print(currentPos); printInterface->print(", ");
-            // printInterface->print("Current Velocity: "); printInterface->print(getVelocity(), 5); printInterface->print(", ");
+            printInterface->print("Current Position: "); printInterface->print(currentPos); printInterface->print(", ");
+            printInterface->print("Current Velocity: "); printInterface->print(currentVel, 5); printInterface->print(", ");
             // printInterface->print("Zero Position: "); printInterface->print(zeroPos); printInterface->print(", ");
             printInterface->print("Encoder Ticks: "); printInterface->print(encoder.read()); printInterface->print(", ");
             printInterface->println();
@@ -44,6 +50,8 @@ class EncoderSensor : public Sensor
     private:
         uint8_t pinA;
         uint8_t pinB;
+
+        int32_t lastPosRaw = 0;
 
         Encoder encoder = Encoder();
 

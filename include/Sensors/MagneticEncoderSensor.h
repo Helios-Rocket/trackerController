@@ -31,7 +31,9 @@ class MagneticEncoderSensor : public Sensor
 
         uint8_t update() override
         {
-            currentPos = as5600.readAngle();
+            currentPos = as5600.readAngle()*conversionConstant;
+
+            currentVel = as5600.getAngularSpeed(AS5600_MODE_DEGREES, false);
 
             return 0;
         }

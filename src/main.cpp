@@ -139,7 +139,7 @@ void configureHardware()
 {
   // configure azimuth hardware
   azimuthSensor->setSensorPins(azimuthEncoderA, azimuthEncoderB);
-  azimuthSensor->setPhysicalConversionConstant(azimuthTicksPerRev);
+  azimuthSensor->setPhysicalConversionConstant(azimuthDegreesPerTick);
   azimuthSensor->setZero(azimuthZeroReading);
   azimuthMotorDriver->setPins(azimuthIN1, azimuthIN2, azimuthPWM);
   azimuthMotorDriver->setPhysicalConstants(azimuthMaxVelocity/azimuthGearRatio, 0);

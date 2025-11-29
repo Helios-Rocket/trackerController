@@ -20,14 +20,14 @@ class AxisController
         void setTolerance(float AllowablePositionError, float AllowableVelocityError)
             {allowedErrorPos = AllowablePositionError; allowedErrorVel = AllowableVelocityError; };
 
-        // set how often we want the control loop to run.
+        // set how many times we want the control loop to run per second.
         // actually updating the control loop is handled internally with a timer, 
         //  to ensure accurate loop timing.
-        // units are microseconds (us)
-        void setLoopTimeStep(double timeStepUS)
+        // units are an integer number of Hz
+        void setLoopUpdateRate(uint loopsPerSecond)
         {
-            timeStep = timeStepUS/(10^6);
-            dt = (1.0/timeStep);
+            updateRate = loopsPerSecond;
+            dt = (1.0/loopsPerSecond);
         }
 
         void setNewGoal(float NewGoalPosition, float NewGoalVelocity){ goalPos=NewGoalPosition; goalVel = NewGoalVelocity; };
@@ -38,21 +38,25 @@ class AxisController
             driver->setHoldBehavior(HoldBehavior::coastMode); // begin in a non-powered state for any calibration reasons
 
             // don't start by default
-            controlLoopTimer.begin([this](){this->updateLoop();}, (timeStep*(10^6)), false);
+            controlLoopTimer.begin([this](){this->updateLoop();}, (dt*(10^6)), false);
 
             return 0;
-        }
+        };
 
         uint8_t updateLoop()
         {
-            sensor->update();
+            // sensor->update(); // sensor updates itself
             // driver.update();
+
+            // get our current error state
+            posError = goalPos - sensor->getDistFrom0();
+            velError = goalVel - sensor->getVelocity();
 
 
 
 
             return 0;
-        }
+        };
 
         bool isEnabled(){return enabled;};
 
@@ -60,6 +64,12 @@ class AxisController
         {
 
         };
+
+        void enable()
+            { enabled = true; controlLoopTimer.start(); };
+
+        void disable()
+            { enabled = false; controlLoopTimer.stop(); };
 
     private:
         // physical hardware interfaces
@@ -72,9 +82,11 @@ class AxisController
         bool enabled = false;
 
         // internal storage variables
+        float posError, velError; // angular unit degrees
         float maxVelLimit, maxAccelLimit, minAngle, maxAngle = 0.0; // angular unit degrees
         float allowedErrorPos, allowedErrorVel = 0.0; // angular unit degrees
         float goalPos, goalVel = 0.0; // angular unit degrees
-        double timeStep, dt; // seconds (s)
+        double dt; // seconds (s)
+        uint updateRate; // hertz (Hz)
 
 };
