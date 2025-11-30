@@ -16,7 +16,7 @@
 #endif // platform specific defines
 
 // axis controller code
-// #include "AxisController.h"
+#include "AxisController.h"
 
 // motor driver code
 #include "MotorDrivers/MotorDriver.h"
@@ -47,8 +47,8 @@ Sensor* elevationSensor = new MagneticEncoderSensor();
 MotorDriver* elevationMotorDriver = new StepDriver();
 
 // motion controller defs
-// AxisController azimuthController(&azimuthMotorDriver, azimuthEnable, azimuthSensor);
-// AxisController elevationController(&elevationMotorDriver, elevationEnable, elevationSensor);
+AxisController azimuthController(azimuthMotorDriver, azimuthSensor);
+AxisController elevationController(elevationMotorDriver, elevationSensor);
 
 // serial interface
 // StreamInterface serialInterface(&SerialUSB, azimuthSensor, elevationSensor, &azimuthController, &elevationController);
@@ -57,8 +57,6 @@ MotorDriver* elevationMotorDriver = new StepDriver();
 TeensyTimerTool::PeriodicTimer interfaceTimer(TeensyTimerTool::TCK);
 TeensyTimerTool::PeriodicTimer debugPrintTimer(TeensyTimerTool::TCK);
 TeensyTimerTool::PeriodicTimer blinkTimer(TeensyTimerTool::TCK);
-// TeensyTimerTool::PeriodicTimer sensorVelocityTimer(TeensyTimerTool::TCK);
-
 
 ////////////////////////////////////////////////////////////////////// Local Function Declarations //////////////////////////////////////////////////////////////////////
 
@@ -152,13 +150,16 @@ void configureHardware()
   elevationMotorDriver->setPhysicalConstants(DegreesPerStepElevation, microStepResolutionElevation);
 
   // configure azimuth motion controller
-  // azimuthController.setPhysicalLimits(azimuthMaxVelocity, azimuthMaxAcceleration, azimuthGearRatio);
-  // azimuthController.setTuningParameters(azimuthFF, azimuthkP, azimuthkI, azimuthkD, 0.0, azimuthAcceptableError, azimuthAcceptableVelocityError, homingVelocity);
-  // azimuthController.setLoopTimeStep(controlLoopTimeStep);
+  azimuthController.setPhysicalLimits(azimuthMaxVelocity, azimuthMaxAcceleration, azimuthMinimumAngle, azimuthMaximumAngle);
+  azimuthController.setTolerance(azimuthAcceptableError, azimuthAcceptableVelocityError);
+  azimuthController.setTuning(azimuthPositionKP, azimuthPositionKI, azimuthPositionKD, azimuthVelocityKP, azimuthVelocityKI, azimuthVelocityKD, azimuthPositionStrength, azimuthVelocityStrength);
+  azimuthController.setLoopUpdateRate(controlLoopUpdateRate);
+  
 
   // configure elevation motion controller
-  // elevationController.setPhysicalLimits(elevationMaxVelocity, elevationMaxAcceleration, elevationGearRatio);
-  // elevationController.setTuningParameters(elevationFF, elevationkP, elevationkI, elevationkD, elevationGravityCompFactor, elevationAcceptableError, elevationAcceptableVelocityError, homingVelocity);
-  // elevationController.setLoopTimeStep(controlLoopTimeStep);
-  // elevationController.setLimits(elevationMinimumAngle, elevationMaximumAngle);
+  elevationController.setPhysicalLimits(elevationMaxVelocity, elevationMaxAcceleration, elevationMinimumAngle, elevationMaximumAngle);
+  elevationController.setTolerance(elevationAcceptableError, elevationAcceptableVelocityError);
+  elevationController.setTuning(elevationPositionKP, elevationPositionKI, elevationPositionKD, elevationVelocityKP, elevationVelocityKI, elevationVelocityKD, elevationPositionStrength, elevationVelocityStrength);
+  elevationController.setLoopUpdateRate(controlLoopUpdateRate);
+
 }

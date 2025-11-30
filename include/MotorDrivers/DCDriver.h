@@ -54,12 +54,7 @@ class DCDriver : public MotorDriver
             running = true;
         }
 
-        void stop()
-        {
-            analogWrite(pwm, 0);
-            running = false;
-            setHold();
-        };
+        void stop() { analogWrite(pwm, 0); running = false; setHold(); };
 
 
     private:
